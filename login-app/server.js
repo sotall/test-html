@@ -31,6 +31,33 @@ app.post('/login', (req, res) => {
     }
 });
 
+// Middleware function to verify the token
+function verifyToken(req, res, next) {
+    const token = req.cookies.authToken;
+
+    if (!token) {
+        // Token not present, redirect to login page
+        return res.redirect('/');
+    }
+
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+        if (err) {
+            // Invalid token, redirect to login page
+            return res.redirect('/');
+        }
+
+        // Token is valid, check if accessing a protected route
+        if (req.originalUrl === '/success.html') {
+            // If accessing /success.html, continue to the next middleware or route handler
+            next();
+        } else {
+            // For other routes, handle the logic accordingly
+            // For example, you can return an error or redirect to an unauthorized page
+            return res.status(403).send('Unauthorized');
+        }
+    });
+}
+
 app.get('/success.html', verifyToken, (req, res) => {
     res.send('Login successful!');
 });
@@ -69,21 +96,3 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
-
-// Middleware function to verify the token
-function verifyToken(req, res, next) {
-    const token = req.cookies.authToken;
-
-    if (!token) {
-        return res.redirect('/'); // Token not present, redirect to login page
-    }
-
-    jwt.verify(token, SECRET_KEY, (err, decoded) => {
-        if (err) {
-            return res.redirect('/'); // Invalid token, redirect to login page
-        }
-
-        // Token is valid, continue to the next middleware or route handler
-        next();
-    });
-}
