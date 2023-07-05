@@ -14,3 +14,5 @@ services:
     image: "login-app"
     ports:
       - "3000:3000"
+    environment:
+      - JWT_SECRET=my_custom_secret_key

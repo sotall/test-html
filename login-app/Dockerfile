@@ -1,6 +1,9 @@
 # Use official node image as the base image
 FROM node:14
 
+# Set the environment variable
+# ENV JWT_SECRET=my_custom_secret_key
+
 # Set the working directory
 WORKDIR /usr/src/app
 
@@ -8,7 +11,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install express body-parser jsonwebtoken cookie-parser
 # RUN npm install jsonwebtoken
 
 # Copy the server script and static files
