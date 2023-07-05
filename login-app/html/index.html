@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Form</title>
+  <style>
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Login Form</h1>
+  <form id="loginForm" onsubmit="login(event)">
+    <div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" required>
+    </div>
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" required>
+    </div>
+    <div>
+      <button type="submit">Login</button>
+    </div>
+    <p id="error" class="error" style="display: none;">Incorrect username or password.</p>
+  </form>
+
+  <script>
+    function login(event) {
+      event.preventDefault();
+
+      // Get input values
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+
+      // Check credentials
+      if (username === 'foo' && password === 'bar') {
+        window.location.href = 'success.html'; // Redirect to success page
+      } else {
+        document.getElementById('error').style.display = 'block'; // Show error message
+      }
+    }
+  </script>
+</body>
+</html>
