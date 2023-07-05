@@ -12,17 +12,3 @@
 
 # Sublime Text
 .sublime-workspace
-
-# Ingore Node modules and package-lock.json
-node_modules/
-package-lock.json
-
-# Ignore Playwright demo folder
-playwright-demo/
-
-# Ignore Playwright misc
-test-results/
-playwright-report/
-/test-results/
-/playwright-report/
-/playwright/.cache/
