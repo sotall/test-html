@@ -31,6 +31,10 @@ app.post('/login', (req, res) => {
     }
 });
 
+app.get('/success.html', verifyToken, (req, res) => {
+    res.send('Login successful!');
+});
+
 app.get('/verify', (req, res) => {
     const token = req.cookies.authToken;
 
@@ -42,10 +46,14 @@ app.get('/verify', (req, res) => {
             } else {
                 const { exp } = decoded; // Expiration time in seconds
 
+                // Check if token has expired
+                if (exp < Date.now() / 1000) {
+                    return res.redirect('/'); // Token has expired, redirect to login page
+                }
+
                 // Token is valid, you can continue processing here
                 return res.json({ success: true, message: 'Token is valid', data: { decoded, exp } });
             }
-
         });
     } else {
         return res.json({ success: false, message: 'Auth token is not supplied' });
@@ -61,3 +69,21 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
+
+// Middleware function to verify the token
+function verifyToken(req, res, next) {
+    const token = req.cookies.authToken;
+
+    if (!token) {
+        return res.redirect('/'); // Token not present, redirect to login page
+    }
+
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return res.redirect('/'); // Invalid token, redirect to login page
+        }
+
+        // Token is valid, continue to the next middleware or route handler
+        next();
+    });
+}
