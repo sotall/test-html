@@ -1,39 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form</title>
-    <style>
-        .error {
-            display: none;
-            color: red;
-        }
-    </style>
-</head>
-<body>
-    <h1>Login Form</h1>
-    <form action="/login" method="POST">
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div>
-            <button type="submit">Login</button>
-        </div>
-        <p id="error" class="error">Incorrect username or password.</p>
-    </form>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login Form</title>
+        <style>
+            .error {
+                display: none;
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Login Form</h1>
+        <form action="/login" method="POST">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required />
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <div>
+                <button type="submit">Login</button>
+            </div>
+            <p id="error" class="error">Incorrect username or password.</p>
+        </form>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const showError = urlParams.get('error');
-        if (showError) {
-            document.getElementById('error').style.display = 'block';
-        }
-    </script>
-</body>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const showError = urlParams.get("error");
+            if (showError) {
+                document.getElementById("error").style.display = "block";
+            }
+
+            // Get the expiration time from the server response
+            const { exp } = response.data;
+
+            // Calculate the remaining time until expiration
+            const expirationTime = exp * 1000; // Convert to milliseconds
+            const currentTime = new Date().getTime();
+            const remainingTime = expirationTime - currentTime;
+
+            // Set a timer to log out the user when the token expires
+            setTimeout(() => {
+                // Perform the logout operation here
+                // For example, redirect to the login page or clear the authentication state
+                window.location.href = "/logout"; // Replace with your logout URL or method
+            }, remainingTime);
+        </script>
+    </body>
 </html>

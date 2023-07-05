@@ -21,7 +21,7 @@ app.post('/login', (req, res) => {
 
     if (user) {
         // Generate a JWT token
-        const token = jwt.sign({ username: user.username }, SECRET_KEY, { expiresIn: '5m' });
+        const token = jwt.sign({ username: user.username }, SECRET_KEY, { expiresIn: '1m' });
 
         // Set the token as a cookie
         res.cookie('authToken', token, { httpOnly: true });
@@ -40,8 +40,12 @@ app.get('/verify', (req, res) => {
             if (err) {
                 return res.json({ success: false, message: 'Token is not valid' });
             } else {
-                return res.json({ success: true, message: 'Token is valid', data: decoded });
+                const { exp } = decoded; // Expiration time in seconds
+
+                // Token is valid, you can continue processing here
+                return res.json({ success: true, message: 'Token is valid', data: { decoded, exp } });
             }
+
         });
     } else {
         return res.json({ success: false, message: 'Auth token is not supplied' });
