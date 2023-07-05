@@ -1,34 +1,28 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const crypto = require('crypto');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const users = require('./users.json'); // Load the usernames and passwords from the JSON file
+const users = require('./users.json');
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/login.html');
-});
+app.use(express.static(__dirname));
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
     const user = users.find(u => u.username === username && u.password === password);
+
     if (user) {
-        res.redirect('/success');
+        const token = crypto.randomBytes(64).toString('hex');
+        res.cookie('authToken', token, { httpOnly: true });
+        res.redirect('/success.html');
     } else {
-        res.redirect('/error');
+        res.redirect('/?error=true');
     }
-});
-
-app.get('/success', (req, res) => {
-    res.send('Login successful!');
-});
-
-app.get('/error', (req, res) => {
-    res.send('Login failed. Incorrect username or password.');
 });
 
 app.listen(3000, () => {
