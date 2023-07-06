@@ -12,7 +12,6 @@ const users = require('./users.json');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 
-// Serve static files from public directory
 app.use(express.static(__dirname + '/public'));
 
 app.post('/login', (req, res) => {
@@ -22,7 +21,7 @@ app.post('/login', (req, res) => {
     if (user) {
         const token = jwt.sign({ username: user.username }, SECRET_KEY, { expiresIn: '1m' });
         res.cookie('authToken', token, { httpOnly: true });
-        res.redirect('/success'); // Changed to /success
+        res.redirect('/success');
     } else {
         res.redirect('/?error=true');
     }
@@ -45,17 +44,12 @@ function verifyToken(req, res, next) {
 }
 
 app.get('/success', verifyToken, (req, res) => {
-    res.sendFile(__dirname + '/private/success.html'); // Pointing to success.html in the private directory
+    res.sendFile(__dirname + '/private/success.html');
 });
 
-app.get('/expiration-time', verifyToken, (req, res) => {
-    const token = req.cookies.authToken;
-    const decoded = jwt.decode(token);
-    const expirationTime = decoded.exp || 0; // Get the expiration time from the decoded token
-
-    res.json({ exp: expirationTime });
+app.get('/another-protected-route', verifyToken, (req, res) => {
+    res.send('Access granted to another protected route');
 });
-
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

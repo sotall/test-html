@@ -13,7 +13,7 @@
     </head>
     <body>
         <h1>Login Form</h1>
-        <form id="login-form" action="/login" method="POST">
+        <form action="/login" method="POST">
             <div>
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required />
@@ -33,44 +33,6 @@
             if (showError) {
                 document.getElementById("error").style.display = "block";
             }
-
-            // Function to fetch the expiration time after successful login
-            function fetchExpirationTime() {
-                fetch('/expiration-time', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${yourAuthToken}` // Replace with your actual authentication token
-                    },
-                    credentials: 'same-origin'
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        const { exp } = data;
-
-                        // Calculate the remaining time until expiration
-                        const expirationTime = exp * 1000; // Convert to milliseconds
-                        const currentTime = new Date().getTime();
-                        const remainingTime = expirationTime - currentTime;
-
-                        // Set a timer to log out the user when the token expires
-                        setTimeout(() => {
-                            // Perform the logout operation here
-                            // For example, redirect to the login page or clear the authentication state
-                            window.location.href = "/logout"; // Replace with your logout URL or method
-                        }, remainingTime);
-                    });
-            }
-
-            // Call the fetchExpirationTime function after successful login
-            // Replace this part with your actual login logic
-            const loginForm = document.getElementById('login-form');
-            loginForm.addEventListener('submit', (event) => {
-                event.preventDefault();
-                // Perform login validation and obtain the authentication token
-                const authToken = localStorage.getItem('authToken'); // Retrieve the cached token from localStorage
-                fetchExpirationTime(authToken); // Call the fetchExpirationTime function after successful login
-            });
         </script>
     </body>
 </html>
