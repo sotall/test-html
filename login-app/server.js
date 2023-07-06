@@ -48,9 +48,14 @@ app.get('/success', verifyToken, (req, res) => {
     res.sendFile(__dirname + '/private/success.html'); // Pointing to success.html in the private directory
 });
 
-app.get('/another-protected-route', verifyToken, (req, res) => {
-    res.send('Access granted to another protected route');
+app.get('/expiration-time', verifyToken, (req, res) => {
+    const token = req.cookies.authToken;
+    const decoded = jwt.decode(token);
+    const expirationTime = decoded.exp || 0; // Get the expiration time from the decoded token
+
+    res.json({ exp: expirationTime });
 });
+
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
